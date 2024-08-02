@@ -16,15 +16,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Setup .NET
+    - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: .Net Build  
-      uses: EasyDesk/action-dotnet-build@v1.0.0 
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+        dotnet-version: 8.0.x    
+    - name: Publish .NET Core Project
+      run: dotnet publish WebVideoTransport.csproj -c Release -o release --nologo
+    - name: Commit wwwroot to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@3.7.1
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: release/wwwroot
