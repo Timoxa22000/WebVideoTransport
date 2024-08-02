@@ -1,0 +1,41 @@
+﻿@model WebVideoTransport.Models.InputData
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <div class="input-group mb-3">
+        <input type="url" class="form-control" asp-for="Url" id="Url" placeholder="Введите url" aria-label="Введите url" aria-describedby="basic-addon2">
+        <button class="input-group-text" type="submit" id="button-addon"><i class="fa-solid fa-play"></i></button>
+    </div>
+    <span asp-validation-for="Url" />
+    <video id="player" src="" controls="true"
+           width="640" height="400" loop="true" />
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $(document).on('click', '#button-addon', function (e) {
+                e.preventDefault();
+                let inputData = new Object();
+                inputData.Url = $('#Url').val();
+                $.ajax({
+                    url: 'Home/Play',
+                    type: 'POST',
+                    data: {
+                        'input': inputData
+                    },
+                    success: function (data) {
+                        $('video').attr('src', data);
+                        $("video")[0].load();
+                    },
+                    error: function () {
+                        console.error('Ошибка во время отправки данных', this);
+                    }
+                });
+            });
+        });
+    </script>
+}
